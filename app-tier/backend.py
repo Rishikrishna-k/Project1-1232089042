@@ -5,10 +5,6 @@ import os
 import sys
 import traceback
 
-# Add model directory to path
-sys.path.append(os.path.abspath("CSE546-SPRING-2025-model"))
-from face_recognition import face_match  # Import face_match directly from model.py
-
 # AWS Configuration
 ASU_ID = "1232089042"  # Replace with your ASU ID
 REQ_QUEUE_URL = f"{ASU_ID}-req-queue"
@@ -20,10 +16,15 @@ S3_OUTPUT_BUCKET = f"{ASU_ID}-out-bucket"
 sqs = boto3.client("sqs", region_name="us-east-1")
 s3 = boto3.client("s3")
 
-DATA_PATH = os.path.join(os.path.dirname(__file__), "CSE546-SPRING-2025-model", "data.pt")
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))  # Get the current directory of backend.py
 
-# Define your local images directory
-LOCAL_IMAGES_DIR = r"C:\Users\rishi\Desktop\cloud computing\projectv 1 part 2\local images"
+# Set the model directory relative to CURRENT_DIR
+sys.path.append(os.path.join(CURRENT_DIR, "CSE546-SPRING-2025-model"))  # Assuming 'CSE546-SPRING-2025-model' is inside the project folder
+from face_recognition import face_match  # Import face_match directly from face-recognition.py
+
+# Set the paths for the data and local images directories relative to the current directory
+DATA_PATH = os.path.join(CURRENT_DIR, "data.pt")  # Updated to relative path
+LOCAL_IMAGES_DIR = os.path.join(CURRENT_DIR, "local_images")
 
 def download_image(image_key):
     """Download image from S3 input bucket."""
